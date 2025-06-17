@@ -62,7 +62,7 @@ def search(request):
     # return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     
            
-    
+
     
 class TodoViewSet(viewsets.ModelViewSet):
     serializer_class = TodoSerializer
@@ -83,3 +83,21 @@ class TodoViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(priority=priority)
         return queryset
     
+
+@api_view(['POST'])
+def logout(request):
+    try:
+        print("Raw body:", request.body)
+        print("Parsed data:", request.data)
+        
+        refresh_token = request.data.get("refresh")  # safer
+        if not refresh_token:
+            return Response({"detail": "Refresh token not provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        token = RefreshToken(refresh_token)
+        token.blacklist()
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+
+    except Exception as e:
+        print("Exception:", e)
+        return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)

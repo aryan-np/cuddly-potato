@@ -12,6 +12,7 @@ router.register('todo',views.TodoViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/login/', views.login,name='login'),
+    path('api/logout/', views.logout,name='logour'),
     path('api/register/', views.register,name='register'),
     path('api/todo/search/', views.search,name='search'),
     path('api/token/refresh',TokenRefreshView.as_view(),name = 'token refresh'),

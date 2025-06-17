@@ -26,7 +26,7 @@ class TodoModel(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
     
-    reminder = models.DurationField(default=timedelta(1))
+    # reminder = models.DurationField(default=timedelta(1))
     def __str__(self):
         return self.title
     

@@ -13,6 +13,9 @@ from rest_framework.permissions import IsAuthenticated
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from django.core.mail import send_mail
+from django.conf import settings
+
 
 
 @api_view(["POST"])
@@ -21,10 +24,18 @@ def login(request):
     password = request.data.get('password')
 
     user = authenticate(username=username,password=password)
+    email = user.email
     
     if user is not None:
         refresh_token = RefreshToken.for_user(user)
         access_token = refresh_token.access_token
+        send_mail(
+        subject='Welcome!',
+        message='Thank you for signing up.',
+        from_email=settings.EMAIL_HOST_USER,
+        recipient_list=[email],
+        fail_silently=False,  # Set True to avoid crashing on error
+    )
         return Response({
             "refresh":str(refresh_token),
             "access": str(access_token)
@@ -101,3 +112,10 @@ def logout(request):
     except Exception as e:
         print("Exception:", e)
         return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+    
+
+
+
+    

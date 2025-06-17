@@ -34,7 +34,7 @@ def login(request):
         message='Thank you for signing up.',
         from_email=settings.EMAIL_HOST_USER,
         recipient_list=[email],
-        fail_silently=False,  # Set True to avoid crashing on error
+        fail_silently=True,  
     )
         return Response({
             "refresh":str(refresh_token),

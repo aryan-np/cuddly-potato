@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from django.db.models import Case, When, Value, IntegerField
 
 from .models import TodoModel
 from .serializers import RegisterSerializer,TodoSerializer
@@ -45,6 +46,20 @@ def register(request):
         },status=status.HTTP_200_OK)
     else:
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    
+    
+@api_view(['GET'])
+def search(request):
+    query = request.query_params.get('q')
+    search_results = TodoModel.objects.filter( title__icontains = query ).annotate(starts_with=Case(
+        When(title__istartswith=query, then=Value(0)),
+        default=Value(1),
+        output_field=IntegerField()
+    )).order_by('starts_with','title')
+    print(search_results)
+    serializer = TodoSerializer(search_results,many=True)
+    return Response(serializer.data,status=status.HTTP_200_OK)
+    # return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     
            
     
